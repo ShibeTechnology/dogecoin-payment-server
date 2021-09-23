@@ -1,0 +1,37 @@
+{
+  "name": "dogecoin-spv-node-middleware",
+  "version": "1.0.0",
+  "description": "dogecoin spv node api",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "lint": "eslint --fix src",
+    "test": "mocha --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xanimo/dogecoin-spv-node-middleware.git"
+  },
+  "author": "xanimo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xanimo/dogecoin-spv-node-middleware/issues"
+  },
+  "homepage": "https://github.com/xanimo/dogecoin-spv-node-middleware#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "helmet": "^4.6.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "mocha": "^9.1.1",
+    "nodemon": "^2.0.13",
+    "supertest": "^6.1.6"
+  }
+}
