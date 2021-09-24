@@ -8,8 +8,4 @@ router.get('/', (req, res) => {
   res.json(['payment']);
 });
 
-router.get('/new', (req, res) => {
-    res.json(['address']);
-});
-
 module.exports = router;
