@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/xanimo/dogecoin-spv-node-middleware#readme",
   "dependencies": {
+    "axios": "^0.24.0",
     "bip65": "^1.0.3",
     "bitcoinjs-lib": "^5.2.0",
     "cors": "^2.8.5",

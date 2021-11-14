@@ -1,11 +1,11 @@
-const { postData } = require('./middlewares')
+const axios = require('axios');
 
 // Dogecoin JSON RPC token
-const token = Buffer.from('hello:world', 'utf8').toString('base64')
+const token = Buffer.from(`${process.env.RPC_USER}:${process.env.RPC_PASSWORD}`, 'utf8').toString('base64')
 
 function jsonRPC (command, params) {
-    return postData('http://127.0.0.1:18332', {
-		jsonrpc: '1.0',
+    return axios.post(`http://${process.env.RPC_URL}:${process.env.RPC_PORT}`, {
+		jsonrpc: '2.0',
 		id: 'wow',
 		method: command, 
 		params: params
@@ -14,6 +14,9 @@ function jsonRPC (command, params) {
       'Authorization': `Basic ${token}`,
       'Content-Type': 'application/json'
     },
+  })
+  .then(function (result) {
+    return result.data
   })
 }
 
