@@ -5,9 +5,16 @@ const bitcoinjs = require('bitcoinjs-lib')
 const router = express.Router();
 
 const channel = require('./channel');
+const { jsonRPC } = require('./../util');
 
 router.get('/', (req, res) => {
-  res.json(['address']);
+  try {
+    let result = jsonRPC("getnetworkinfo", [])
+    console.log(result)
+    return result
+  } catch(e) {
+    throw new Error("Failed to contact dogecoin node")
+  }
 });
 
 // change to post req, check that we have pubkey and locktime

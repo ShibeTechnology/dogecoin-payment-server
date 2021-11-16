@@ -22,7 +22,7 @@ const token = Buffer.from(`${process.env.RPC_USER}:${process.env.RPC_PASSWORD}`,
 function jsonRPC (command, params) {
     return axios.post(`http://${process.env.RPC_URL}:${process.env.RPC_PORT}`, {
 		jsonrpc: '2.0',
-		id: 'wow',
+		id: 'payment channel much wow',
 		method: command, 
 		params: params
 	}, {
