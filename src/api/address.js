@@ -8,13 +8,10 @@ const channel = require('./channel');
 const { jsonRPC } = require('./../util');
 
 router.get('/', (req, res) => {
-  try {
-    let result = jsonRPC("getnetworkinfo", [])
-    console.log(result)
-    return result
-  } catch(e) {
-    throw new Error("Failed to contact dogecoin node")
-  }
+  console.log(res.statusCode)
+  let result = jsonRPC("getnetworkinfo", [])
+  console.log(result)
+  res.json(res.statusCode)
 });
 
 // change to post req, check that we have pubkey and locktime
