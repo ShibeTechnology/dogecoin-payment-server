@@ -1,5 +1,6 @@
 const app = require('./app');
 const http = require('http');
+const { jsonRPC } = require('./util');
 
 async function main() {
     // process.env.CONFIG
