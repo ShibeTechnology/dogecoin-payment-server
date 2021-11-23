@@ -1,6 +1,8 @@
 const { Psbt, script, payments, networks, address } = require('bitcoinjs-lib');
 const express = require('express');
+
 const { jsonRPC } = require('../util');
+const { PaymentMessage } = require('./models/payment');
 
 const router = express.Router();
 
@@ -43,8 +45,14 @@ router.use('/', (req, res, next) => {
 });
 
 router.get('/new', (req, res) => {
+    const paymsg = PaymentMessage.fromObject(req.body);
+    const syntaxVdn = paymsg.validate();
+    if (!syntaxVdn.isOk()) {
+      return res.status(400).send(syntaxVdn.toResponseObject())
+    }
+
     let flag = false
-    let psbt2 = Psbt.fromHex(req.body['psbt'].toString());
+    let psbt2 = Psbt.fromHex(paymsg.psbt);
     console.log(psbt2)
     let redeemScript = script.toASM(psbt2.data.inputs[0].redeemScript)
     console.log(redeemScript)
