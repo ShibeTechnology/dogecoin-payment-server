@@ -40,22 +40,37 @@ function initRegtest() {
   }
 }
 
-initRegtest()
+function initKeyPairB(key) {
+    // Initialize Dogecoin testnet info
+    bitcoinjs.networks.dogecoin_regtest = {
+      messagePrefix: '\x18Dogecoin Signed Message:\n',
+      bech32: 'tdge',
+      bip32: {
+        public: 0x0432a9a8,
+        private: 0x0432a243
+      },
+      pubKeyHash: 0x6f,
+      scriptHash: 0xc4,
+      wif: 0xef,
+    }
 
-function initPubKey() {
-  const keyPairB = bitcoinjs.ECPair.fromPrivateKey(Buffer.from(process.env.PRIVATE_KEY, 'hex'))
-  keyPairB.network = bitcoinjs.networks.dogecoin_regtest
-  process.env.PUBLIC_KEY=keyPairB.publicKey.toString('hex')
+  const keyPairB = {
+    "keyPair": bitcoinjs.ECPair.fromPrivateKey(new Buffer.from(key, 'hex'), {
+      compressed: false,
+      network: bitcoinjs.networks.dogecoin_regtest
+    }),
+    "publicKey": ""
+  }
+  keyPairB['publicKey'] = keyPairB['keyPair'].publicKey.toString('hex')
+  process.env.PUBLIC_KEY = keyPairB['publicKey']
+  return keyPairB
 }
-
-initPubKey()
-
 // Dogecoin JSON RPC token
 const token = Buffer.from(`${process.env.RPC_USER}:${process.env.RPC_PASSWORD}`, 'utf8').toString('base64')
 
 async function jsonRPC (command, params) {
-    const response = await axios.post(`http://${process.env.RPC_URL}:${process.env.RPC_PORT}`, {
-      jsonrpc: '2.0',
+    return await axios.post(`http://${process.env.RPC_URL}:${process.env.RPC_PORT}`, {
+      jsonrpc: '1.0',
       id: 'payment channel much wow',
       method: command, 
       params: params
@@ -65,15 +80,10 @@ async function jsonRPC (command, params) {
         'Content-Type': 'application/json'
       },
     })
-    .then(function (result) {
-      console.log(result.data)
-    })
-    .catch(function(error) {
-      console.log(error.message);
-    })
-    return response
 }
 
 module.exports = {
-    jsonRPC
+    jsonRPC,
+    initRegtest,
+    initKeyPairB
 }

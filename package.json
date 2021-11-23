@@ -4,8 +4,8 @@
   "description": "dogecoin spv node api",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon --delay 1500ms src/index.js",
+    "start": "DEBUG=express:* node src/index.js",
+    "dev": "DEBUG=express:* nodemon --delay 1500ms src/index.js",
     "lint": "eslint --fix src",
     "test": "mocha --exit"
   },
