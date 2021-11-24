@@ -1,15 +1,16 @@
-const { Psbt, script, payments, networks, address } = require('bitcoinjs-lib');
+const networks = require('../networks');
 const express = require('express');
 
 const { PaymentMessage, PaymentMessageType } = require('./models/payment');
 const { PaymentService } = require('../services/paymentservice');
 
 const router = express.Router();
-const pmtService = new PaymentService(networks.dogecoin_regtest, 1199);
-
-const PUBKEY = "033018856019108336a67b29f4cf9612b9b83953a92a5ef8472b6822f78d850477";
+const pmtService = new PaymentService(networks.regtest, 1199);
 
 router.post('/', (req, res) => {
+  const keyPair = initKeyPair(process.env.PRIVATE_KEY);
+  const pubkey = keyPair.publicKey.toString('hex');
+
   // check syntax of payment message we received
   const paymsg = PaymentMessage.fromObject(req.body);
   const syntaxVdn = paymsg.validate();
@@ -26,7 +27,7 @@ router.post('/', (req, res) => {
   }
 
   // handle announcement
-  const psbtVdn = pmtService.checkPSBT(PUBKEY, paymsg.psbt);
+  const psbtVdn = pmtService.checkPSBT(pubkey, paymsg.psbt);
   return res.status(psbtVdn.isOk() ? 200 : 400).send(psbtVdn.toResponseObject());
 });
 
