@@ -1,5 +1,6 @@
 const networks = require('../networks');
 const express = require('express');
+const { initKeyPair } = require('../util');
 
 const { PaymentMessage, PaymentMessageType } = require('./models/payment');
 const { PaymentService } = require('../services/paymentservice');
