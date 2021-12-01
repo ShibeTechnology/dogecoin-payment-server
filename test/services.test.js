@@ -40,7 +40,7 @@ const generateTx = (p2sh, amt) => {
     return tx
 }
 
-const generatePsbtHex = (tx, p2sh, amt, p2pkh, keyPair) => {
+const generatePsbtHex = (tx, p2sh, amt, p2pkh, keyPair, multisigScript) => {
     const psbt = new bitcoinjs.Psbt({ network: networks.regtest })
     psbt.addInput({
       // if hash is string, txid, if hash is Buffer, is reversed compared to txid
@@ -60,23 +60,16 @@ const generatePsbtHex = (tx, p2sh, amt, p2pkh, keyPair) => {
     psbt.finalizeAllInputs()
   
     const transactionMultisig = psbt.extractTransaction(true).toHex()
-    
-    return transactionMultisig
-}
 
-function createFundingTx(toRedeemScript, fromECKey) {
-    inputHash = crypto.randomBytes(16);
-    inputVout = 0;
-    inputScript = bitcoinjs.payments.p2pkh({publicKey: fromECKey.publicKey, network: networks.regtest })
-    output = bitcoinjs.payments.p2sh({redeemscript: toRedeemScript, network: networks.regtest })
-    outputvalue = 1337 * 1e8;
-    let psbt = new bitcoinjs.Psbt({ network: networks.regtest })
-    psbt.addInput(inputHash, inputVout, inputScript);
-    psbt.addOutput(output, outputvalue);
-    psbt.signInput(0, fromECKey);
-    psbt.finalize();
-    return psbt
-  }
+    let psbt2 = new bitcoinjs.Psbt({ network: networks.regtest })
+    psbt2.addInput({
+        hash: bitcoinjs.Transaction.fromHex(transactionMultisig).getId(),
+        index: 0,
+        nonWitnessUtxo: Buffer.from(transactionMultisig, 'hex'),
+        redeemScript: bitcoinjs.script.fromASM(multisigScript)
+    })
+    return psbt2
+}
 
 const initPaymentService = (expiry) => {
     return new PaymentService(networks.regtest, expiry);
@@ -90,11 +83,15 @@ describe('payment service', () => {
     const p2sh = generateP2SH(rs)
     const alice = bitcoinjs.payments.p2pkh({ pubkey: keyPairA.publicKey, network: networks.regtest })
     let tx = generateTx(p2sh, 100000000, alice, keyPairA)
+    let ps = initPaymentService(1159)
+    let result = ''
     it('should be a goodPsbtHex', function(done) {
         console.log(tx)
-        let res = generatePsbtHex(tx, p2sh, 100000000, alice, keyPairA)
+        let res = generatePsbtHex(tx, p2sh, 100000000, alice, keyPairA, rs)
         console.log(res)
-        // console.log(createFundingTx(rs, keyPairA))
+        console.log(ps)
+        result = ps.checkPSBT(keyPairA.publicKey.toString('hex'), res.toHex())
+        console.log(result)
         done()
     })
 });
