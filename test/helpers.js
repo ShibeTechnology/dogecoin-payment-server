@@ -1,76 +1,53 @@
-const bitcoinjs = require('bitcoinjs-lib');
-const networks = require('../src/networks');
+const { payments, Psbt, script, Transaction } = require('bitcoinjs-lib');
 const bip65 = require('bip65');
-const crypto = require('crypto');
-
-const generateKeyPair = () => {
-    return bitcoinjs.ECPair.makeRandom(options={
-        network: networks.regtest
-    });
-}
 
 const encodeLocktime = (n) => {
     n.length == 0 ? n = 0 : n = 300;
     return Buffer.from(bip65.encode({ blocks: n }).toString(16), 'hex').reverse().toString('hex')
 }
 
-const constructRS = (keyPairA, keyPairB, locktime) => {
+const constructRS = (customer, merchant, locktime) => {
     encodedLocktime = encodeLocktime(locktime);
-    return "OP_IF " + encodedLocktime + "00" + " OP_CHECKLOCKTIMEVERIFY OP_DROP " +
-    keyPairA.publicKey.toString('hex') + " OP_CHECKSIGVERIFY OP_ELSE OP_2 OP_ENDIF " +
-    keyPairA.publicKey.toString('hex') + " " + keyPairB.publicKey.toString('hex') + " OP_2 OP_CHECKMULTISIG";
+
+    return script.fromASM("OP_IF " + encodedLocktime + "00" + " OP_CHECKLOCKTIMEVERIFY OP_DROP " +
+    customer.publicKey.toString('hex') + " OP_CHECKSIGVERIFY OP_ELSE OP_2 OP_ENDIF " +
+    customer.publicKey.toString('hex') + " " + merchant.publicKey.toString('hex') + " OP_2 OP_CHECKMULTISIG");
 }
 
-const generateP2SH = (multisigScript) => {
-    return bitcoinjs.payments.p2sh({
-        redeem: { output: bitcoinjs.script.fromASM(multisigScript) },
-        network: networks.regtest
-    })
+// simply mine into the p2sh with a coinbase tx
+function createFundingTx(targetRedeemscript, amount) {
+
+  const tx = new Transaction();
+
+  // coinbase input
+  tx.addInput(Buffer.alloc(32).fill(0x00), 0xffffffff);
+
+  // create a p2sh script from the redeemScript
+  const target = payments.p2sh({ redeem: { output: targetRedeemscript } });
+
+  // p2sh output
+  tx.addOutput(target.output, amount);
+
+  return tx;
+
 }
 
-const generateTx = (p2sh, amt) => {
-    let tx = new bitcoinjs.Transaction()
-    tx.addInput(Buffer.from(tx.getId(), 'hex'), 0, bitcoinjs.Transaction.DEFAULT_SEQUENCE, Buffer.from(p2sh.redeem.output.toString('hex'), 'hex'))
-    tx.addOutput(Buffer.from(p2sh.redeem.output.toString('hex'), 'hex'), amt)
-    return tx
-}
+function generatePsbt (fundingTx, redeemScript) {
+    const psbt = new Psbt()
 
-const generatePsbtHex = (tx, p2sh, amt, p2pkh, keyPair, multisigScript) => {
-    const psbt = new bitcoinjs.Psbt({ network: networks.regtest })
     psbt.addInput({
-      // if hash is string, txid, if hash is Buffer, is reversed compared to txid
-      hash: tx.getHash(),
-      index: tx.ins[0].index,
-      // non-segwit inputs now require passing the whole previous tx as Buffer
-      nonWitnessUtxo: Buffer.from(tx.toHex(), 'hex'),
-      redeemScript: p2pkh.output
-    })
-    // 100*100000000
-    psbt.addOutputs([{
-      script: bitcoinjs.script.fromASM('OP_HASH160 ' + p2sh.hash.toString('hex') + ' OP_EQUAL'),
-      value: amt
-    }])
-
-    psbt.signInput(0, keyPair)
-    psbt.finalizeAllInputs()
-
-    const transactionMultisig = psbt.extractTransaction(true).toHex()
-
-    let psbt2 = new bitcoinjs.Psbt({ network: networks.regtest })
-    psbt2.addInput({
-        hash: bitcoinjs.Transaction.fromHex(transactionMultisig).getId(),
+        hash: fundingTx.getHash(),
         index: 0,
-        nonWitnessUtxo: Buffer.from(transactionMultisig, 'hex'),
-        redeemScript: bitcoinjs.script.fromASM(multisigScript)
-    })
-    return psbt2
+        nonWitnessUtxo: fundingTx.toBuffer(),
+        redeemScript: redeemScript
+    });
+
+    return psbt;
 }
 
 module.exports = {
   constructRS,
+  createFundingTx,
   encodeLocktime,
-  generateKeyPair,
-  generateP2SH,
-  generatePsbtHex,
-  generateTx,
+  generatePsbt,
 };

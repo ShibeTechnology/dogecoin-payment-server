@@ -1,30 +1,25 @@
 const assert = require('assert');
 
-const bitcoinjs = require('bitcoinjs-lib');
+const { ECPair, payments } = require('bitcoinjs-lib');
 const networks = require('../src/networks');
 const { PaymentService } = require('../src/services/paymentservice');
 
-const {
-  constructRS,
-  generateKeyPair,
-  generateP2SH,
-  generatePsbtHex,
-  generateTx,
-} = require('./helpers');
+const { constructRS, createFundingTx, generatePsbt } = require('./helpers');
 
 describe('payment service', () => {
-    const keyPairA = generateKeyPair()
-    const keyPairB = generateKeyPair()
-    const rs = constructRS(keyPairA, keyPairB, 300)
-    const p2sh = generateP2SH(rs)
-    const alice = bitcoinjs.payments.p2pkh({ pubkey: keyPairA.publicKey, network: networks.regtest })
-    const tx = generateTx(p2sh, 100000000, alice, keyPairA)
+
+    const ourKey = ECPair.makeRandom({ network: networks.regtest });
     const ps = new PaymentService(networks.regtest, 1159);
 
     it('should be a goodPsbtHex', function(done) {
-        const psbt = generatePsbtHex(tx, p2sh, 100000000, alice, keyPairA, rs)
-        const result = ps.checkPSBT(keyPairA.publicKey.toString('hex'), psbt.toHex())
-        assert(result.isOk(), result.errors.join("\n"))
-        done()
+        const customerKey = ECPair.makeRandom({ network: networks.regtest });
+        const rs = constructRS(customerKey, ourKey, 300)
+        const tx = createFundingTx(rs, 1337 * 1e8);
+
+        const psbt = generatePsbt(tx, rs);
+        const result = ps.checkPSBT(ourKey.publicKey.toString('hex'), psbt.toHex());
+
+        assert(result.isOk(), result.errors.join("\n"));
+        done();
     })
 });
