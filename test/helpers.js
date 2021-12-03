@@ -9,16 +9,16 @@ const generateKeyPair = () => {
     });
 }
 
-const generateLockTime = (n) => {
+const encodeLocktime = (n) => {
     n.length == 0 ? n = 0 : n = 300;
     return Buffer.from(bip65.encode({ blocks: n }).toString(16), 'hex').reverse().toString('hex')
 }
 
-const constructRS = (locktime, keyPairA, keyPairB) => {
-    return multisigScript = "OP_IF " +
-    locktime + "00" + " OP_CHECKLOCKTIMEVERIFY OP_DROP " +
+const constructRS = (keyPairA, keyPairB, locktime) => {
+    encodedLocktime = encodeLocktime(locktime);
+    return "OP_IF " + encodedLocktime + "00" + " OP_CHECKLOCKTIMEVERIFY OP_DROP " +
     keyPairA.publicKey.toString('hex') + " OP_CHECKSIGVERIFY OP_ELSE OP_2 OP_ENDIF " +
-    keyPairA.publicKey.toString('hex') + " " + keyPairB.publicKey.toString('hex') + " OP_2 OP_CHECKMULTISIG"
+    keyPairA.publicKey.toString('hex') + " " + keyPairB.publicKey.toString('hex') + " OP_2 OP_CHECKMULTISIG";
 }
 
 const generateP2SH = (multisigScript) => {
@@ -68,8 +68,8 @@ const generatePsbtHex = (tx, p2sh, amt, p2pkh, keyPair, multisigScript) => {
 
 module.exports = {
   constructRS,
+  encodeLocktime,
   generateKeyPair,
-  generateLockTime,
   generateP2SH,
   generatePsbtHex,
   generateTx,

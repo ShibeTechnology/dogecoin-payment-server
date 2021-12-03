@@ -7,7 +7,6 @@ const { PaymentService } = require('../src/services/paymentservice');
 const {
   constructRS,
   generateKeyPair,
-  generateLockTime,
   generateP2SH,
   generatePsbtHex,
   generateTx,
@@ -16,8 +15,7 @@ const {
 describe('payment service', () => {
     const keyPairA = generateKeyPair()
     const keyPairB = generateKeyPair()
-    const locktime = generateLockTime(300)
-    const rs = constructRS(locktime, keyPairA, keyPairB)
+    const rs = constructRS(keyPairA, keyPairB, 300)
     const p2sh = generateP2SH(rs)
     const alice = bitcoinjs.payments.p2pkh({ pubkey: keyPairA.publicKey, network: networks.regtest })
     const tx = generateTx(p2sh, 100000000, alice, keyPairA)
