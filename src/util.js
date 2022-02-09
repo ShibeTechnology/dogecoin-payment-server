@@ -1,6 +1,6 @@
-const axios = require('axios');
-const bitcoinjs = require('bitcoinjs-lib');
-const networks = require('./networks');
+const axios = require('axios')
+const bitcoinjs = require('bitcoinjs-lib')
+const networks = require('./networks')
 
 function checkConfig() {
   const config = [
@@ -23,6 +23,11 @@ async function checkDogecoinNode() {
   } catch (err) {
     throw new Error(`Dogecoin node not reachable : ${err.message}`)
   }
+}
+
+async function importaddress(redeemScript) {
+  // IDEA: register under label that correspond to your service
+  return await jsonRPC('importaddress', [redeemScript.toString('hex'), 'minecraft', true, true])
 }
 
 async function jsonRPC (command, params) {
@@ -53,6 +58,7 @@ function initKeyPair(key) {
 module.exports = {
     checkDogecoinNode,
     checkConfig,
+    importaddress,
     jsonRPC,
     initKeyPair
 }

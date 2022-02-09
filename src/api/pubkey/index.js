@@ -1,7 +1,7 @@
-const express = require('express');
-const { initKeyPair } = require('../util');
+const express = require('express')
+const { initKeyPair } = require('../../util')
 
-const router = express.Router();
+const router = express.Router()
 
 // Return pubkey to the person initiating the payment channel (Alice) so they can create the proper redeemscript
 router.get('/new', (req, res) => {
@@ -11,4 +11,4 @@ router.get('/new', (req, res) => {
   })
 });
 
-module.exports = router;
+module.exports = router

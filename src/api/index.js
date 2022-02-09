@@ -1,10 +1,14 @@
-const express = require('express');
-const pubkey = require('./pubkey');
-const payment = require('./payment');
+const express = require('express')
 
-const router = express.Router();
+const announce = require('./announce')
+const payment = require('./payment')
+const pubkey = require('./pubkey')
 
-router.use('/pubkey', pubkey);
-router.use('/payment', payment);
+const router = express.Router()
 
-module.exports = router;
+router.use('/announce', announce)
+router.use('/payment', payment)
+router.use('/pubkey', pubkey)
+
+
+module.exports = router

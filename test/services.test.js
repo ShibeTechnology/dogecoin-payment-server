@@ -1,25 +1,22 @@
-const assert = require('assert');
+const assert = require('assert')
 
-const { ECPair, payments } = require('bitcoinjs-lib');
-const networks = require('../src/networks');
-const { PaymentService } = require('../src/services/paymentservice');
+const { ECPair } = require('bitcoinjs-lib')
+const networks = require('../src/networks')
+const AnnounceService = require('../src/api/announce/service')
 
 const { constructRS, createFundingTx, generatePsbt } = require('./helpers');
 
-describe('payment service', () => {
+describe('announce service', () => {
 
-    const ourKey = ECPair.makeRandom({ network: networks.regtest });
-    const ps = new PaymentService(networks.regtest, 1159);
+    const ourKey = ECPair.makeRandom({ network: networks.regtest })
+    const as = new AnnounceService(networks.regtest, 0)
 
-    it('should be a goodPsbtHex', function(done) {
-        const customerKey = ECPair.makeRandom({ network: networks.regtest });
+    it('should be valid', function(done) {
+        const customerKey = ECPair.makeRandom({ network: networks.regtest })
         const rs = constructRS(customerKey, ourKey, 300)
-        const tx = createFundingTx(rs, 1337 * 1e8);
 
-        const psbt = generatePsbt(tx, rs);
-        const result = ps.checkPSBT(ourKey.publicKey.toString('hex'), psbt.toHex());
+        as.validate(ourKey.publicKey.toString('hex'), rs)
 
-        assert(result.isOk(), result.errors.join("\n"));
-        done();
+        done()
     })
 });
