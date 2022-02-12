@@ -5,26 +5,24 @@
  *        instead, pass those to the methods.
  */
 class PaymentService {
-
-  constructor(network) {
+  constructor (network) {
     this.network = network
   }
 
   /** Check the funding of a tx through our blocksource */
-  checkFunding(minConfirms, expiresAt, txid, txHex, p2sh) {
+  checkFunding (minConfirms, expiresAt, txid, txHex, p2sh) {
 
-    //TODO: confirm block height on the blockchain
-    //TODO: check confirmations
-    //TODO: check not expired
+    // TODO: confirm block height on the blockchain
+    // TODO: check confirmations
+    // TODO: check not expired
 
   }
 
   /** check the counterparty signature on a psbt */
-  checkSignature(pubkey, signature) {
-    //TODO: verify signature
+  checkSignature (pubkey, signature) {
+    // TODO: verify signature
 
   }
-
 }
 
 module.exports = PaymentService

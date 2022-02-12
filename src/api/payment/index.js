@@ -12,6 +12,8 @@ const paymentService = new PaymentService(networks.regtest)
 router.post('/', (req, res) => {
   const paymentMessage = PaymentMessage.fromObject(req.body)
 
+  console.log(paymentMessage)
+
   // For now always ok
   paymentService.checkFunding()
   paymentService.checkSignature()

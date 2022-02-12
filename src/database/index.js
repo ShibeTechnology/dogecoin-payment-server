@@ -1,17 +1,17 @@
 const level = require('level')
 
 class Database {
-    constructor() {
-        this.data = level('paymentchannel')
-    }
+  constructor () {
+    this.data = level('paymentchannel')
+  }
 
-    savePaymentChannel (pc) {
+  savePaymentChannel (pc) {
 
-    }
+  }
 
-    updatePaymentChannel () {
+  updatePaymentChannel () {
 
-    }
+  }
 }
 
 module.exports = Database

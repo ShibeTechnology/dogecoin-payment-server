@@ -10,5 +10,4 @@ router.use('/announce', announce)
 router.use('/payment', payment)
 router.use('/pubkey', pubkey)
 
-
 module.exports = router

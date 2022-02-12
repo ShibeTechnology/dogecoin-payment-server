@@ -9,6 +9,6 @@ router.get('/new', (req, res) => {
   return res.send({
     pubkey: keyPair.publicKey.toString('hex')
   })
-});
+})
 
 module.exports = router

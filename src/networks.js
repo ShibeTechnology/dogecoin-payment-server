@@ -1,5 +1,5 @@
 
-regtest = {
+const regtest = {
   messagePrefix: '\x18Dogecoin Signed Message:\n',
   bech32: 'tdge',
   bip32: {
@@ -8,7 +8,7 @@ regtest = {
   },
   pubKeyHash: 0x6f,
   scriptHash: 0xc4,
-  wif: 0xef,
+  wif: 0xef
 }
 
 module.exports = {

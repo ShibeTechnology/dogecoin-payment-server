@@ -6,7 +6,7 @@
   "scripts": {
     "start": "DEBUG=express:* node src/index.js",
     "dev": "DEBUG=express:* nodemon --delay 1500ms src/index.js",
-    "lint": "eslint --fix src",
+    "lint": "standard",
     "test": "mocha --exit"
   },
   "repository": {
@@ -35,6 +35,12 @@
     "eslint-plugin-import": "^2.24.2",
     "mocha": "^9.1.1",
     "nodemon": "^2.0.13",
+    "standard": "^16.0.4",
     "supertest": "^6.1.6"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
   }
 }

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-function errorHandler(err, req, res, next) {
+function errorHandler (err, req, res, next) {
   /* eslint-enable no-unused-vars */
 
   // Should be 200 unless err.statusCode or err.status
@@ -8,9 +8,9 @@ function errorHandler(err, req, res, next) {
   res.json({
     message: err.message,
     code: err.code || null
-  });
+  })
 }
 
 module.exports = {
   errorHandler
-};
+}
