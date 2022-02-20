@@ -4,10 +4,10 @@
   "description": "dogecoin spv node api",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=express:* node src/index.js",
-    "dev": "DEBUG=express:* nodemon --delay 1500ms src/index.js",
+    "start": "DEBUG=-express:* node src/index.js",
+    "dev": "DEBUG=-express:* nodemon --delay 1500ms src/index.js",
     "lint": "standard",
-    "test": "mocha --exit"
+    "test": "mocha --timeout 10000 --exit"
   },
   "repository": {
     "type": "git",
@@ -25,9 +25,11 @@
     "bitcoinjs-lib": "^5.2.0",
     "bs58check": "^2.1.2",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1",
+    "express": "^5.0.0-beta.1",
     "helmet": "^4.6.0",
-    "level": "^7.0.1"
+    "level": "^7.0.1",
+    "secp256k1": "^4.0.3",
+    "winston": "^3.6.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
@@ -42,5 +44,10 @@
     "env": [
       "jest"
     ]
+  },
+  "imports": {
+    "#logging": {
+      "default": "./src/logging.js"
+    }
   }
 }

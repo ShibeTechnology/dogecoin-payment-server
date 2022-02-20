@@ -1,15 +1,25 @@
 const http = require('http')
+
+const logger = require('#logging')
+
 const app = require('./app')
-const { checkConfig, checkDogecoinNode } = require('./util')
+const rpc = require('./utils/rpc')
+const { checkConfig } = require('./utils/util')
 
 require('dotenv').config()
 
 async function main () {
+  logger.info('Staring payment channel server')
+
   // verify envrionment is correct, rpc user pw url port
   checkConfig()
 
   // Ping node to verify if it is accessible
-  checkDogecoinNode()
+  rpc.ping()
+    .catch(function (res) {
+      logger.error('Dogecoin node not available')
+      process.exit(0)
+    })
 
   // Start server
   const port = process.env.PORT || 5000
@@ -47,14 +57,14 @@ async function main () {
     const bind =
       typeof addr === 'string' ? `pipe ${addr}` : `${addr.port}`
 
-    console.log(`Listening: http://localhost:${bind}`)
+    logger.info(`Listening http://localhost:${bind}`)
   }
 }
 
 main()
   .catch(
     function (e) {
-      console.log(e)
+      logger.error(e.message)
       process.exit(0)
     }
   )

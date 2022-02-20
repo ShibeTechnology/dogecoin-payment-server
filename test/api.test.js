@@ -14,7 +14,7 @@ describe('GET /api/v1/pubkey/new', () => {
 describe('POST /api/v1/announce', () => {
   it('responds with status code 200', function (done) {
     const data = {
-      redeemScript: '63021200b17521033018856019108336a67b29f4cf9612b9b83953a92a5ef8472b6822f78d850477ad67526821023ab50de3fd251fb4808cd7137a60692c4be9cdac54f7a43cc226ffd5bfa0b9c721033018856019108336a67b29f4cf9612b9b83953a92a5ef8472b6822f78d85047752ae'
+      redeemScript: '63021f00b17521037dec983d6793b5a55c6ab3a559fea122af42fa52505edab197ae00879c789166ad67526821037dec983d6793b5a55c6ab3a559fea122af42fa52505edab197ae00879c78916621023ab50de3fd251fb4808cd7137a60692c4be9cdac54f7a43cc226ffd5bfa0b9c752ae'
     }
     request(app)
       .post('/api/v1/announce')
@@ -30,7 +30,7 @@ describe('POST /api/v1/announce', () => {
       .set('Accept', 'application/json')
       .expect(400, {
         message: 'Missing redeemScript field.',
-        code: null
+        id: 'MissingFieldError'
       }, done)
   })
 
@@ -43,8 +43,8 @@ describe('POST /api/v1/announce', () => {
       .send(data)
       .set('Accept', 'application/json')
       .expect(400, {
-        message: 'Our key must not be part of the CLTV clause.',
-        code: 102
+        message: 'Payee public key must be part of the multisig clause.',
+        id: 'OurKeyNotInMultisigError'
       }, done)
   })
 })

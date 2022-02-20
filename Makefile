@@ -8,4 +8,4 @@ restart:
 	docker start dogecoind_regtest
 	
 clean-regtest:
-	rm -rf data/regtest
+	rm -rf data/paymentchannel

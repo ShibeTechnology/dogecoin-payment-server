@@ -2,16 +2,62 @@ const level = require('level')
 
 class Database {
   constructor () {
-    this.data = level('paymentchannel')
+    this.paymentchannelDB = level('data/paymentchannel')
   }
 
-  savePaymentChannel (pc) {
-
+  savePaymentChannel (address, data) {
+    return this.paymentchannelDB.put(address, JSON.stringify(data))
   }
 
-  updatePaymentChannel () {
+  updatePaymentChannelUTXO (address, txid, txout) {
+    return this.paymentchannelDB.get(address)
+      .then((value) => {
+        const data = JSON.parse(value)
+        data.utxo = { txid, txout }
 
+        return this.paymentchannelDB.put(address, JSON.stringify(data))
+      })
+  }
+
+  updatePaymentChannelTransactions (address, tx) {
+    return this.paymentchannelDB.get(address)
+      .then((value) => {
+        const data = JSON.parse(value)
+        data.transactions.push(tx)
+
+        return this.paymentchannelDB.put(address, JSON.stringify(data))
+      })
+  }
+
+  async getAllPaymentChannels () {
+    const paymentchannels = []
+    for await (const value of this.paymentchannelDB.iterator()) {
+      const pc = JSON.parse(value[1])
+      pc.address = value[0]
+      paymentchannels.push(pc)
+    }
+
+    return paymentchannels
+  }
+
+  getPaymentChannel (address) {
+    return this.paymentchannelDB.get(address)
+      .then(function (value) {
+        return JSON.parse(value)
+      })
+      .catch(function (err) {
+        if (err) {
+          if (err.notFound) {
+            // handle a 'NotFoundError' here
+            return null
+          }
+        }
+        throw err
+      })
   }
 }
 
-module.exports = Database
+const db = new Database()
+Object.freeze(db)
+
+module.exports = db

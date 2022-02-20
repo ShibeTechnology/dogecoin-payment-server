@@ -10,12 +10,11 @@ class PaymentService {
   }
 
   /** Check the funding of a tx through our blocksource */
-  checkFunding (minConfirms, expiresAt, txid, txHex, p2sh) {
+  checkFunding (paymentMessage) {
 
     // TODO: confirm block height on the blockchain
     // TODO: check confirmations
     // TODO: check not expired
-
   }
 
   /** check the counterparty signature on a psbt */
