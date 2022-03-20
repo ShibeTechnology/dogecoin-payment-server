@@ -11,15 +11,6 @@ class NotValidMessageError extends Error {
   }
 }
 
-class InvalidSignatureError extends Error {
-  constructor () {
-    super('Invalid signature. Micropayment invalid.')
-    this.name = 'InvalidSignatureError'
-    this.status = 400
-  }
-}
-
 module.exports = {
-  NotValidMessageError,
-  InvalidSignatureError
+  NotValidMessageError
 }

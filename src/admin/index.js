@@ -1,7 +1,7 @@
 const express = require('express')
 const db = require('../database')
 const rpc = require('../utils/rpc')
-const CLTVScript = require('../cltv')
+const CLTVScript = require('../paymentchannel/cltv')
 const { pubkeyToPubkeyHash } = require('../utils/address')
 
 const router = express.Router()

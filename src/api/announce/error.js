@@ -7,7 +7,6 @@ class OurKeyNotInMultisigError extends Error {
     super('Payee public key must be part of the multisig clause.')
     this.name = 'OurKeyNotInMultisigError'
     this.status = 400
-    this.code = 104
   }
 }
 
@@ -16,7 +15,6 @@ class BadLocktimeError extends Error {
     super(`Locktime needs to be greater than ${minLocktime}`)
     this.name = 'BadLocktimeError'
     this.status = 400
-    this.code = 105
   }
 }
 

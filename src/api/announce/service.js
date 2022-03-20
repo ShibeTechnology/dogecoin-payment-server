@@ -1,6 +1,7 @@
 const { OurKeyNotInMultisigError, BadLocktimeError } = require('./error')
 const { createPayToHash, pubkeyToAddress } = require('../../utils/address')
-const CLTVScript = require('../../cltv')
+const CLTVScript = require('../../paymentchannel/cltv')
+const PaymentChannelState = require('../../paymentchannel/state')
 const db = require('../../database')
 
 /*
@@ -36,11 +37,18 @@ class AnnounceService {
     }
   }
 
-  saveDB (redeemScript) {
+  saveDB (redeemScript, transaction, signature) {
     const p2sh = createPayToHash(redeemScript)
     const address = pubkeyToAddress(p2sh.hashScript, this.network.scriptHash, true)
 
-    return db.savePaymentChannel(address, { redeemScript: redeemScript.toString('hex'), utxo: null, transactions: [] })
+    const transactions = [{
+      timestamp: Date.now(),
+      tx: transaction.toString('hex'),
+      signature: signature.toString('hex'),
+      ref: 0
+    }]
+
+    return db.savePaymentChannel(address, { redeemScript: redeemScript.toString('hex'), utxo: null, transactions, state: PaymentChannelState.Announced })
   }
 }
 

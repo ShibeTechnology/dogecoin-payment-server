@@ -21,6 +21,10 @@ async function decoderawtransaction (tx) {
   return await jsonRPC('decoderawtransaction', [tx])
 }
 
+async function sendrawtransaction (tx) {
+  return await jsonRPC('sendrawtransaction', [tx])
+}
+
 // TODO: Create a RPC service
 async function jsonRPC (command, params) {
   const token = Buffer.from(`${process.env.RPC_USER}:${process.env.RPC_PASSWORD}`, 'utf8').toString('base64')
@@ -43,5 +47,6 @@ module.exports = {
   importaddress,
   gettransaction,
   getrawtransaction,
-  decoderawtransaction
+  decoderawtransaction,
+  sendrawtransaction
 }

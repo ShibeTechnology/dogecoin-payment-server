@@ -150,4 +150,71 @@ function prepareTransactionToSign (transaction, vint) {
   return buffer
 }
 
-module.exports = { decodeTx, prepareTransactionToSign }
+function encodeRawTransaction (transaction) {
+  const txInCount = CompactSize.fromSize(transaction.txInCount)
+  const txOutCount = CompactSize.fromSize(transaction.txOutCount)
+  let bufferSize = 4 + txInCount.length
+
+  for (let txIn = 0; txIn < transaction.txInCount; txIn++) {
+    bufferSize += 32 + 4 + transaction.txIns[txIn].signatureSize.length + transaction.txIns[txIn].signature.length + 4
+  }
+
+  bufferSize += txOutCount.length
+
+  for (let txOut = 0; txOut < transaction.txOutCount; txOut++) {
+    bufferSize += 8 + CompactSize.fromSize(transaction.txOuts[txOut].pkScriptSize).length + transaction.txOuts[txOut].pkScriptSize
+  }
+
+  bufferSize += 4
+
+  const buffer = Buffer.alloc(bufferSize)
+  let offset = 0
+
+  buffer.writeUInt32LE(transaction.version, offset)
+  offset += 4
+
+  txInCount.copy(buffer, offset)
+  offset += txInCount.length
+
+  for (let txInIndex = 0; txInIndex < transaction.txInCount; txInIndex++) {
+    Buffer.from(transaction.txIns[txInIndex].previousOutput.hash, 'hex').copy(buffer, offset)
+    offset += 32
+
+    buffer.writeUInt32LE(transaction.txIns[txInIndex].previousOutput.index, offset)
+    offset += 4
+
+    const scriptSigSize = CompactSize.fromSize(transaction.txIns[txInIndex].signature.length)
+    scriptSigSize.copy(buffer, offset)
+    offset += scriptSigSize.length
+
+    transaction.txIns[txInIndex].signature.copy(buffer, offset)
+    offset += transaction.txIns[txInIndex].signature.length
+
+    buffer.writeUInt32LE(transaction.txIns[txInIndex].sequence, offset)
+    offset += 4
+  }
+
+  txOutCount.copy(buffer, offset)
+
+  offset += txOutCount.length
+
+  for (let txOutIndex = 0; txOutIndex < transaction.txOutCount; txOutIndex++) {
+    buffer.writeBigInt64LE(transaction.txOuts[txOutIndex].value, offset)
+    offset += 8
+
+    const pkScriptSize = CompactSize.fromSize(transaction.txOuts[txOutIndex].pkScriptSize)
+
+    pkScriptSize.copy(buffer, offset)
+    offset += pkScriptSize.length
+
+    transaction.txOuts[txOutIndex].pkScript.copy(buffer, offset)
+    offset += transaction.txOuts[txOutIndex].pkScriptSize
+  }
+
+  buffer.writeUInt32LE(transaction.locktime, offset)
+  offset += 4
+
+  return buffer
+}
+
+module.exports = { decodeTx, prepareTransactionToSign, encodeRawTransaction }

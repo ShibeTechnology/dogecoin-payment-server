@@ -5,6 +5,9 @@ const AnnounceService = require('./service')
 const { initKeyPair } = require('../../utils/util')
 const rpc = require('../../utils/rpc')
 const networks = require('../../networks')
+const { verifyPaymentChannelTx } = require('../../paymentchannel/util')
+const { InvalidSignatureError } = require('../error')
+const CLTVScript = require('../../paymentchannel/cltv')
 
 // TODO: find a more appropriate value
 const MIN_CHANNEL_EXPIRY = 0
@@ -22,13 +25,19 @@ router.post('/', async (req, res) => {
   const announcemsg = AnnounceMessage.fromObject(body)
   announceService.validate(pubkey, announcemsg.redeemScript)
 
+  const cltv = CLTVScript.fromHex(announcemsg.redeemScript)
+  const ok = verifyPaymentChannelTx(announcemsg.transaction, announcemsg.signature, announcemsg.redeemScript, Buffer.from(cltv.payerPubkey, 'hex'))
+  if (!ok) {
+    throw new InvalidSignatureError()
+  }
+
   // Import the address to our dogecoin node
   // It allows being notified when the transaction has been included in a block
   // TODO: this should probably be part of the service
   rpc.importaddress(announcemsg.redeemScript)
 
   // Because express 4.x don't support `await`
-  await announceService.saveDB(announcemsg.redeemScript)
+  await announceService.saveDB(announcemsg.redeemScript, announcemsg.transaction, announcemsg.signature)
 
   res.send()
 })

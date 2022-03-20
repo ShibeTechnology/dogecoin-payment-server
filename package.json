@@ -7,7 +7,7 @@
     "start": "DEBUG=-express:* node src/index.js",
     "dev": "DEBUG=-express:* nodemon --delay 1500ms src/index.js",
     "lint": "standard",
-    "test": "mocha --timeout 10000 --exit"
+    "test": "mocha --exit"
   },
   "repository": {
     "type": "git",

@@ -9,11 +9,12 @@ class Database {
     return this.paymentchannelDB.put(address, JSON.stringify(data))
   }
 
-  updatePaymentChannelUTXO (address, txid, txout) {
+  updatePaymentChannelUTXO (address, txid, txout, state) {
     return this.paymentchannelDB.get(address)
       .then((value) => {
         const data = JSON.parse(value)
         data.utxo = { txid, txout }
+        data.state = state
 
         return this.paymentchannelDB.put(address, JSON.stringify(data))
       })
@@ -58,6 +59,7 @@ class Database {
 }
 
 const db = new Database()
+// Singleton
 Object.freeze(db)
 
 module.exports = db

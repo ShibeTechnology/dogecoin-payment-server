@@ -9,12 +9,12 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     env:
-      - NODE_ENV=development
-      - RPC_USER=satoshi
-      - RPC_PASSWORD=amiens
-      - RPC_URL=127.0.0.1
-      - RPC_PORT=44555
-      - PRIVATE_KEY=${{ secret.PRIVATE_KEY }}
+      NODE_ENV: development
+      RPC_USER: satoshi
+      RPC_PASSWORD: amiens
+      RPC_URL: 127.0.0.1
+      RPC_PORT: 44555
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
     steps:
     - name: Checkout Repo 
       uses: actions/checkout@v2
@@ -27,4 +27,6 @@ jobs:
     - name: Run Standard
       run: npm run lint
     - name: Run tests
-      run: npm test
+      run: |
+        mkdir data
+        npm test
