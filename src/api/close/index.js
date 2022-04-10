@@ -13,6 +13,8 @@ const router = express.Router()
 
 // Close the opened payment channel
 router.post('/', async (req, res) => {
+  const config = req.app.locals.config
+
   logger.info('/close called')
 
   const closeMessage = CloseMessage.fromObject(req.body)
@@ -53,7 +55,7 @@ router.post('/', async (req, res) => {
     }
 
     let tx = Buffer.from(latestTx.tx, 'hex')
-    const privkey = Buffer.from(process.env.PRIVATE_KEY, 'hex')
+    const privkey = Buffer.from(config.privateKey, 'hex')
     const payerSignature = Buffer.from(latestTx.signature, 'hex')
     tx = signPaymentChannelTx(tx, payerSignature, closeMessage.redeemScript, privkey)
 

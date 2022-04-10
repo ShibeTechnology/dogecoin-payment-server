@@ -1,13 +1,18 @@
 const express = require('express')
-
-require('dotenv').config()
-
 const api = require('./api')
 const admin = require('./admin')
+const Configuration = require('./configuration')
 
-const app = express()
+module.exports = function (args = {}) {
+  const config = new Configuration(args)
+  const app = express()
 
-app.use('/api/v1', api)
-app.use('/admin', admin)
+  // Because we wnat config accessible everywhere!
+  // TODO: do the same for logging and rpc
+  app.locals.config = config
 
-module.exports = app
+  app.use('/api/v1', api)
+  app.use('/admin', admin)
+
+  return app
+}

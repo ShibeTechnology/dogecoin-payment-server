@@ -16,10 +16,11 @@ const router = express.Router()
 const announceService = new AnnounceService(networks.regtest, MIN_CHANNEL_EXPIRY)
 
 router.post('/', async (req, res) => {
+  const config = req.app.locals.config
   const { body } = req
 
   // Express is able to catch error and send the message on its own;
-  const keyPair = initKeyPair(process.env.PRIVATE_KEY)
+  const keyPair = initKeyPair(config.privateKey)
   const pubkey = keyPair.publicKey.toString('hex')
 
   const announcemsg = AnnounceMessage.fromObject(body)
