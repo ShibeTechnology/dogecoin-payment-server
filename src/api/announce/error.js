@@ -10,6 +10,14 @@ class OurKeyNotInMultisigError extends Error {
   }
 }
 
+class OurKeyInCTLVClauseError extends Error {
+  constructor () {
+    super('Payee public key should not bee in the CTLV clause.')
+    this.name = 'OurKeyInCTLVClauseError'
+    this.status = 400
+  }
+}
+
 class BadLocktimeError extends Error {
   constructor (minLocktime) {
     super(`Locktime needs to be greater than ${minLocktime}`)
@@ -20,5 +28,6 @@ class BadLocktimeError extends Error {
 
 module.exports = {
   OurKeyNotInMultisigError,
+  OurKeyInCTLVClauseError,
   BadLocktimeError
 }
