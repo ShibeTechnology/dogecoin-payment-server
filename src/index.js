@@ -3,7 +3,7 @@ const app = require('./app')
 const rpc = require('./utils/rpc')
 
 function main () {
-  logger.info('Staring payment channel server')
+  logger.info('Starting payment channel server')
 
   // Start server
   const port = process.env.PORT || 5000
