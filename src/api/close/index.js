@@ -59,7 +59,12 @@ router.post('/', async (req, res) => {
 
     const result = await rpc.sendrawtransaction(tx.toString('hex'))
 
-    logger.info(JSON.stringify(result))
+    console.log(result)
+    logger.info(result)
+    if (result.error) {
+      throw new Error(result.error)
+    }
+
   }
 
   res.send()

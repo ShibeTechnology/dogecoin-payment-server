@@ -6,10 +6,9 @@ const CompactSize = require('../utils/compactSize')
 function signPaymentChannelTx (rawtx, payerSignature, redeemScript, privkey) {
   let tx = decodeTx(rawtx)
 
-  // Probably not redeem script but p2sh
   tx.txIns[0].signature = redeemScript
-
   tx.hashCodeType = 1
+
   const rawTx = prepareTransactionToSign(tx, 0)
   const message = doubleHash(rawTx)
   const signature = sign(message, privkey)
@@ -23,11 +22,11 @@ function signPaymentChannelTx (rawtx, payerSignature, redeemScript, privkey) {
   // need to build sig script
   // Do we need to know the order of the pubkey ?
   const sigScript = Buffer.from('00' +
-    sizeSigPayee.toString('hex') +
-    signature.toString('hex') +
-    '01' +
     sizeSigPayer.toString('hex') +
     payerSignature.toString('hex') +
+    '01' +
+    sizeSigPayee.toString('hex') +
+    signature.toString('hex') +
     '01' +
     '00' +
     '4c' +
@@ -46,12 +45,13 @@ function signPaymentChannelTx (rawtx, payerSignature, redeemScript, privkey) {
 function verifyPaymentChannelTx (rawtx, signature, redeemScript, pubkey) {
   const tx = decodeTx(rawtx)
 
-  // Probably not redeem script but p2sh
   tx.txIns[0].signature = redeemScript
-
   tx.hashCodeType = 1
+
   const rawTx = prepareTransactionToSign(tx, 0)
   const message = doubleHash(rawTx)
+
+  console.log(message.toString('hex'))
 
   const ok = verify(signature, pubkey, message)
 

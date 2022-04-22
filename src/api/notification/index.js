@@ -30,7 +30,8 @@ router.post('/', function (req, res) {
                 logger.info('Found payment channel in database')
 
                 if (result.transactions.length > 0) {
-                  const tx = decodeTx(result.transactions[0])
+                  logger.info(JSON.stringify(result.transactions[0]))
+                  const tx = decodeTx(Buffer.from(result.transactions[0].tx, 'hex'))
 
                   if (txid !== tx.id.toString('hex')) {
                     logger.warn('txid is different from the payment channel return tx saved')

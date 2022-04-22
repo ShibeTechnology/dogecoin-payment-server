@@ -34,7 +34,9 @@ router.post('/', async (req, res) => {
     Verify signature
   */
   const cltv = CLTVScript.fromHex(pc.redeemScript)
-  const ok = verifyPaymentChannelTx(paymentMessage.transaction, paymentMessage.signature, Buffer.from(cltv.payerPubkey, 'hex'))
+  logger.info(paymentMessage.redeemScript.toString('hex'))
+  logger.info(paymentMessage.transaction.toString('hex'))
+  const ok = verifyPaymentChannelTx(paymentMessage.transaction, paymentMessage.signature, paymentMessage.redeemScript, Buffer.from(cltv.payerPubkey, 'hex'))
 
   if (!ok) {
     throw new InvalidSignatureError()
