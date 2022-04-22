@@ -1,4 +1,5 @@
 const axios = require('axios')
+const logger = require('../logging')
 
 async function ping () {
   return await jsonRPC('ping', [])
@@ -39,6 +40,11 @@ async function jsonRPC (command, params) {
       Authorization: `Basic ${token}`,
       'Content-Type': 'application/json'
     }
+  }).then(function (result) {
+    return result.data
+  }).catch(function (err) {
+    logger.error(err)
+    return err
   })
 }
 
