@@ -24,8 +24,6 @@ router.post('/', async (req, res) => {
 
   const pc = await db.getPaymentChannel(address)
 
-  logger.info(JSON.stringify(pc))
-
   // No payment channel found
   if (pc === null) {
     throw new NoPaymentChannelError()
@@ -35,7 +33,7 @@ router.post('/', async (req, res) => {
     throw new NotOpenedError()
   }
 
-  if (pc.state === state.Closed) {
+  if (pc.state === state.Closed || pc.state === state.Closing) {
     throw new ChannelAlreadyClosedError()
   }
 
@@ -48,7 +46,6 @@ router.post('/', async (req, res) => {
 
     let latestTx = pc.transactions[0]
     for (const tx of pc.transactions) {
-      logger.info(JSON.stringify(tx))
       if (tx.timestamps > latestTx.timestamps) {
         latestTx = tx
       }
@@ -60,13 +57,11 @@ router.post('/', async (req, res) => {
     tx = signPaymentChannelTx(tx, payerSignature, closeMessage.redeemScript, privkey)
 
     const result = await rpc.sendrawtransaction(tx.toString('hex'))
+    logger.info('TxID broadcasted :' + result)
 
-    console.log(result)
-    logger.info(result)
-    if (result.error) {
-      throw new Error(result.error)
-    }
+    await db.updatePaymentChannelStatus(address, state.Closing)
 
+    return res.send()
   }
 
   res.send()

@@ -41,7 +41,7 @@ async function jsonRPC (command, params) {
       'Content-Type': 'application/json'
     }
   }).then(function (result) {
-    return result.data
+    return result.data.result
   }).catch(function (err) {
     logger.error(err)
     return err
