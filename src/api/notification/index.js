@@ -19,7 +19,7 @@ router.post('/', function (req, res) {
 
   rpc.getrawtransaction(txid)
     .then(function (result) {
-      const { vout } = result.data.result
+      const { vout } = result
 
       for (const txout of vout) {
         const { type, addresses } = txout.scriptPubKey
@@ -29,16 +29,25 @@ router.post('/', function (req, res) {
               if (result) {
                 logger.info('Found payment channel in database')
 
-                if (result.transactions.length > 0) {
-                  logger.info(JSON.stringify(result.transactions[0]))
-                  const tx = decodeTx(Buffer.from(result.transactions[0].tx, 'hex'))
+                switch (result.state) {
+                  case PaymentChannelState.Announced:
+                    if (result.transactions.length > 0) {
+                      logger.info(JSON.stringify(result.transactions[0]))
+                      const tx = decodeTx(Buffer.from(result.transactions[0].tx, 'hex'))
 
-                  if (txid !== tx.id.toString('hex')) {
-                    logger.warn('txid is different from the payment channel return tx saved')
-                  }
+                      if (txid !== tx.id.toString('hex')) {
+                        logger.warn('txid is different from the payment channel return tx saved')
+                      }
+                    }
+
+                    db.updatePaymentChannelUTXO(addresses[0], txid, txout, PaymentChannelState.Opened)
+                    break
+                  case PaymentChannelState.Closing:
+                    db.updatePaymentChannelUTXO(addresses[0], txid, txout, PaymentChannelState.Closed)
+                    break
+                  default:
+                    logger.info('Nothing to do')
                 }
-
-                db.updatePaymentChannelUTXO(addresses[0], txid, txout, PaymentChannelState.Opened)
               }
             })
         }
