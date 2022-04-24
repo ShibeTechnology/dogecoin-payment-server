@@ -30,6 +30,16 @@ class Database {
       })
   }
 
+  updatePaymentChannelStatus (address, state) {
+    return this.paymentchannelDB.get(address)
+      .then((value) => {
+        const data = JSON.parse(value)
+        data.state = state
+
+        return this.paymentchannelDB.put(address, JSON.stringify(data))
+      })
+  }
+
   async getAllPaymentChannels () {
     const paymentchannels = []
     for await (const value of this.paymentchannelDB.iterator()) {

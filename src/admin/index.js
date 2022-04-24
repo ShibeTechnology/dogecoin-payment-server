@@ -3,6 +3,7 @@ const db = require('../database')
 const rpc = require('../utils/rpc')
 const CLTVScript = require('../paymentchannel/cltv')
 const { pubkeyToPubkeyHash } = require('../utils/address')
+const PaymentChannelState = require('../paymentchannel/state')
 
 const router = express.Router()
 
@@ -36,7 +37,7 @@ router.use('/', async function (req, res) {
       const pubkey = CLTVScript.fromHex(pc.redeemScript).payeePubkey
       const pubkeyHash = pubkeyToPubkeyHash(Buffer.from(pubkey, 'hex'))
       const result = await rpc.decoderawtransaction(latestCommitment.tx)
-      const tx = result.data.result
+      const tx = result
 
       for (const vout of tx.vout) {
         if (vout.scriptPubKey.hex.includes(pubkeyHash.toString('hex'))) {
@@ -45,6 +46,10 @@ router.use('/', async function (req, res) {
           break
         }
       }
+    }
+
+    if (pc.state === PaymentChannelState.Closed) {
+      continue
     }
 
     body += `${pc.address} -> ${amount} Đ<br/>`
