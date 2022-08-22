@@ -24,7 +24,7 @@
     "bip65": "^1.0.3",
     "bitcoinjs-lib": "^5.2.0",
     "bs58check": "^2.1.2",
-    "express": "^5.0.0-beta.1",
+    "express": "^4.18.1",
     "level": "^7.0.1",
     "secp256k1": "^4.0.3",
     "winston": "^3.6.0"
