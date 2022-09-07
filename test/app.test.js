@@ -1,10 +1,7 @@
 // const request = require('supertest')
 // const app = require('../src/app')
+const test = require('ava')
 
-describe('app', () => {
+test.todo('app')
 
-})
-
-describe('GET /', () => {
-
-})
+test.todo('GET /')

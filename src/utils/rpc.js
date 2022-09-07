@@ -1,36 +1,42 @@
 const axios = require('axios')
 const logger = require('../logging')
 
-async function ping () {
-  return await jsonRPC('ping', [])
+class RPC {
+  constructor (config = {}) {
+    // TODO: verify we have all the config (url, port, user, password)
+    this.config = config
+  }
+
+  async ping () {
+    return await jsonRPC(this.config, 'ping', [])
+  }
+
+  async importaddress (redeemScript) {
+    // IDEA: register under label that correspond to your service
+    return await jsonRPC(this.config, 'importaddress', [redeemScript.toString('hex'), 'minecraft', false, true])
+  }
+
+  async gettransaction (txid) {
+    return await jsonRPC(this.config, 'gettransaction', [txid, true])
+  }
+
+  async getrawtransaction (txid) {
+    return await jsonRPC(this.config, 'getrawtransaction', [txid, true])
+  }
+
+  async decoderawtransaction (tx) {
+    return await jsonRPC(this.config, 'decoderawtransaction', [tx])
+  }
+
+  async sendrawtransaction (tx) {
+    return await jsonRPC(this.config, 'sendrawtransaction', [tx])
+  }
 }
 
-async function importaddress (redeemScript) {
-  // IDEA: register under label that correspond to your service
-  return await jsonRPC('importaddress', [redeemScript.toString('hex'), 'minecraft', false, true])
-}
+async function jsonRPC (config, command, params) {
+  const token = Buffer.from(`${config.user}:${config.password}`, 'utf8').toString('base64')
 
-async function gettransaction (txid) {
-  return await jsonRPC('gettransaction', [txid, true])
-}
-
-async function getrawtransaction (txid) {
-  return await jsonRPC('getrawtransaction', [txid, true])
-}
-
-async function decoderawtransaction (tx) {
-  return await jsonRPC('decoderawtransaction', [tx])
-}
-
-async function sendrawtransaction (tx) {
-  return await jsonRPC('sendrawtransaction', [tx])
-}
-
-// TODO: Create a RPC service
-async function jsonRPC (command, params) {
-  const token = Buffer.from(`${process.env.RPC_USER}:${process.env.RPC_PASSWORD}`, 'utf8').toString('base64')
-
-  return await axios.post(`http://${process.env.RPC_URL}:${process.env.RPC_PORT}`, {
+  return await axios.post(`http://${config.url}:${config.port}`, {
     jsonrpc: '1.0',
     id: 'wow',
     method: command,
@@ -44,15 +50,8 @@ async function jsonRPC (command, params) {
     return result.data.result
   }).catch(function (err) {
     logger.error(err)
-    return err
+    throw err
   })
 }
 
-module.exports = {
-  ping,
-  importaddress,
-  gettransaction,
-  getrawtransaction,
-  decoderawtransaction,
-  sendrawtransaction
-}
+module.exports = RPC

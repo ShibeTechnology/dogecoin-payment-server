@@ -1,4 +1,5 @@
 const express = require('express')
+require('express-async-errors')
 const logger = require('#logging')
 const CloseMessage = require('./message')
 const db = require('../../database')
@@ -6,14 +7,13 @@ const { createPayToHash, pubkeyToAddress } = require('../../utils/address')
 const networks = require('../../networks')
 const state = require('../../paymentchannel/state')
 const { signPaymentChannelTx } = require('../../paymentchannel/util')
-const rpc = require('../../utils/rpc')
 const { NotOpenedError, ChannelAlreadyClosedError, NoPaymentChannelError, NoCommitmentError } = require('./error')
 
 const router = express.Router()
 
 // Close the opened payment channel
 router.post('/', async (req, res) => {
-  const config = req.app.locals.config
+  const { config, rpc } = req.app.locals
 
   logger.info('/close called')
 
