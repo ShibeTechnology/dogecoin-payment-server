@@ -7,7 +7,7 @@
     "start": "DEBUG=-express:* node src/index.js",
     "dev": "DEBUG=-express:* nodemon --delay 1500ms src/index.js",
     "lint": "standard",
-    "test": "mocha --exit"
+    "test": "ava"
   },
   "repository": {
     "type": "git",
@@ -24,12 +24,14 @@
     "bip65": "^1.0.3",
     "bitcoinjs-lib": "^5.2.0",
     "bs58check": "^2.1.2",
-    "express": "^5.0.0-beta.1",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
     "level": "^7.0.1",
     "secp256k1": "^4.0.3",
     "winston": "^3.6.0"
   },
   "devDependencies": {
+    "ava": "^4.3.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
@@ -47,5 +49,11 @@
     "#logging": {
       "default": "./src/logging.js"
     }
+  },
+  "ava": {
+    "verbose": true,
+    "files": [
+      "test/*.test.js"
+    ]
   }
 }

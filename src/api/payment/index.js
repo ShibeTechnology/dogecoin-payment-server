@@ -1,4 +1,5 @@
 const express = require('express')
+require('express-async-errors')
 
 const networks = require('../../networks')
 const { createPayToHash, pubkeyToAddress } = require('../../utils/address')

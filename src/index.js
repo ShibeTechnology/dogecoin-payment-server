@@ -1,6 +1,7 @@
 const logger = require('#logging')
-const app = require('./app')
 const rpc = require('./utils/rpc')
+
+const app = require('./app')()
 
 function main () {
   logger.info('Starting payment channel server')

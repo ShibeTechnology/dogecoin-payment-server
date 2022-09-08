@@ -1,9 +1,9 @@
 const express = require('express')
+require('express-async-errors')
 
 const AnnounceMessage = require('./message')
 const AnnounceService = require('./service')
 const { initKeyPair } = require('../../utils/util')
-const rpc = require('../../utils/rpc')
 const networks = require('../../networks')
 const { verifyPaymentChannelTx } = require('../../paymentchannel/util')
 const { InvalidSignatureError } = require('../error')
@@ -16,7 +16,7 @@ const router = express.Router()
 const announceService = new AnnounceService(networks.regtest, MIN_CHANNEL_EXPIRY)
 
 router.post('/', async (req, res) => {
-  const config = req.app.locals.config
+  const { config, rpc } = req.app.locals
   const { body } = req
 
   // Express is able to catch error and send the message on its own;

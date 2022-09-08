@@ -3,7 +3,6 @@ const express = require('express')
 const logger = require('#logging')
 
 const { decodeTx } = require('../../utils/tx')
-const rpc = require('../../utils/rpc')
 const db = require('../../database')
 const PaymentChannelState = require('../../paymentchannel/state')
 
@@ -13,6 +12,7 @@ const SCRIPTHASH_TYPE = 'scripthash'
 
 // Return pubkey to the person initiating the payment channel (Alice) so they can create the proper redeemscript
 router.post('/', function (req, res) {
+  const { rpc } = req.app.locals
   const { txid } = req.body
 
   logger.info('Notification called for : %s', txid)
