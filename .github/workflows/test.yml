@@ -22,7 +22,6 @@ jobs:
     - name: Start docker dogecoind
       run: |
         docker build -t dogecoind provision/
-        docker run --network=host --name dogecoind_regtest dogecoind
     - name: Run tests
       run: |
         mkdir data
