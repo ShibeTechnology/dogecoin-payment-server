@@ -1,5 +1,4 @@
 const logger = require('#logging')
-const rpc = require('./utils/rpc')
 
 const app = require('./app')()
 
