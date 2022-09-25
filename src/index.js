@@ -12,7 +12,7 @@ function main () {
     logger.info(`Listening http://localhost:${port}`)
 
     // Ping node to verify if it is accessible
-    rpc.ping()
+    app.locals.rpc.ping()
       .catch(function () {
         logger.error('Dogecoin node not available')
         process.exit(0)
