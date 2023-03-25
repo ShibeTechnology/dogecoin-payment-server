@@ -7,8 +7,8 @@ const mainnet = {
   },
   pubKeyHash: 0x1E,
   scriptHash: 0x16,
-  wif: 0x9E,
-};
+  wif: 0x9E
+}
 
 const testnet = {
   messagePrefix: '\x18Dogecoin Signed Message:\n',
@@ -19,8 +19,8 @@ const testnet = {
   },
   pubKeyHash: 0x71,
   scriptHash: 0xc4,
-  wif: 0xf1,
-};
+  wif: 0xf1
+}
 
 const regtest = {
   messagePrefix: '\x18Dogecoin Signed Message:\n',
@@ -31,11 +31,11 @@ const regtest = {
   },
   pubKeyHash: 0x6f,
   scriptHash: 0xc4,
-  wif: 0xef,
-};
+  wif: 0xef
+}
 
 module.exports = {
   mainnet,
   testnet,
   regtest
-};
+}
