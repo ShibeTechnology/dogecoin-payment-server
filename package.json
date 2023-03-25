@@ -4,8 +4,8 @@
   "description": "dogecoin spv node api",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=-express:* node src/index.js",
-    "dev": "DEBUG=-express:* nodemon --delay 1500ms src/index.js",
+    "start": "DEBUG=-express:* node index.js",
+    "dev": "DEBUG=-express:* nodemon --delay 1500ms index.js",
     "lint": "standard",
     "test": "ava"
   },
@@ -24,6 +24,7 @@
     "bip65": "^1.0.3",
     "bitcoinjs-lib": "^5.2.0",
     "bs58check": "^2.1.2",
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "express-async-errors": "^3.1.1",
     "level": "^7.0.1",

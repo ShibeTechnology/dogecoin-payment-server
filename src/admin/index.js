@@ -1,6 +1,6 @@
 const express = require('express')
 const db = require('../database')
-const rpc = require('../utils/rpc')
+const { jsonRPC } = require('../utils/util')
 const CLTVScript = require('../paymentchannel/cltv')
 const { pubkeyToPubkeyHash } = require('../utils/address')
 const PaymentChannelState = require('../paymentchannel/state')
@@ -36,7 +36,7 @@ router.use('/', async function (req, res) {
     if (latestCommitment) {
       const pubkey = CLTVScript.fromHex(pc.redeemScript).payeePubkey
       const pubkeyHash = pubkeyToPubkeyHash(Buffer.from(pubkey, 'hex'))
-      const result = await rpc.decoderawtransaction(latestCommitment.tx)
+      const result = await jsonRPC('decoderawtransaction', [latestCommitment.tx])
       const tx = result
 
       for (const vout of tx.vout) {
