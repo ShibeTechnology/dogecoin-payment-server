@@ -26,4 +26,5 @@ jobs:
     - name: Run tests
       run: |
         mkdir data
+        echo -e "RPC_URL=127.0.0.1\nRPC_PORT=18443\nRPC_USER=satoshi\nRPC_PASSWORD=amiens\nPRIVATE_KEY=ef3cf19e6ce34bcf5c716f93ae4aa054c3653486a177cbdf2a49be791f514097" >> .env
         npm test
