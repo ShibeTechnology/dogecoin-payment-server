@@ -3,7 +3,7 @@
 ## Setup
 
 ```
-npm install
+npm i
 ```
 
 ## Lint

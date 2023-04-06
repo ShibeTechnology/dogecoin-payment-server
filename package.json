@@ -4,8 +4,8 @@
   "description": "dogecoin spv node api",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=-express:* node src/index.js",
-    "dev": "DEBUG=-express:* nodemon --delay 1500ms src/index.js",
+    "start": "DEBUG=-express:* node index.js",
+    "dev": "DEBUG=-express:* nodemon --delay 1500ms index.js",
     "lint": "standard",
     "fix": "standard --fix",
     "test": "ava"
@@ -35,6 +35,7 @@
   "devDependencies": {
     "assert": "^2.0.0",
     "ava": "^4.3.1",
+    "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",

@@ -2,14 +2,7 @@ const test = require('ava')
 const request = require('supertest')
 const createApp = require('../src/app')
 
-const app = createApp({
-  rpcUser: 'satoshi',
-  rpcPassword: 'amiens',
-  rpcUrl: '127.0.0.1',
-  rpcPort: 18443,
-  // Seed 'Dogecoin seed'. DO NOT USE! ONLY FOR TESTING!
-  privateKey: 'ef3cf19e6ce34bcf5c716f93ae4aa054c3653486a177cbdf2a49be791f514097'
-})
+const app = createApp()
 
 test('GET /api/v1/pubkey/new - responds with json', async t => {
   await new Promise(function (resolve, reject) {

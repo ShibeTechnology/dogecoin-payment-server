@@ -1,8 +1,6 @@
-const logger = require('#logging')
-
 const app = require('./app')()
 
-function main () {
+module.exports.start = (config, logger) => {
   logger.info('Starting payment channel server')
 
   // Start server
@@ -18,5 +16,3 @@ function main () {
       })
   })
 }
-
-main()
