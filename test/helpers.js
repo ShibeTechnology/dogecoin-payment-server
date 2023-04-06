@@ -43,9 +43,14 @@ function generatePsbt (fundingTx, redeemScript) {
   return psbt
 }
 
+function getAddress (node, network) {
+  return payments.p2pkh({ pubkey: node.publicKey, network }).address
+}
+
 module.exports = {
   constructRS,
   createFundingTx,
   encodeLocktime,
-  generatePsbt
+  generatePsbt,
+  getAddress
 }
